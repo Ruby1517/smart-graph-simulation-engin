@@ -55,4 +55,18 @@ if(BUILD_TESTING)
         NAME PortScanDetection
         COMMAND test_port_scan
     )
+
+    add_executable(test_csv_reader
+        tests/test_csv_reader.cpp
+    )
+
+    target_link_libraries(test_csv_reader
+        PRIVATE graph_core
+    )
+
+    add_test(
+        NAME CSVReaderValidation
+        COMMAND test_csv_reader
+    )
+    
 endif()
