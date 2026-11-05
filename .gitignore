@@ -1,0 +1,15 @@
+# CMake build files
+/build/
+cmake-build-*/
+
+# Compiled executables
+graph
+graph.exe
+test_port_scan
+test_port_scan.exe
+
+# macOS
+.DS_Store
+
+# VS Code local configuration
+.vscode/
