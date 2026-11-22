@@ -1,24 +1,33 @@
 
 #include "NetworkAnalyzer.h"
+#include "ProtocolUtils.h"
 
 #include <iostream>
 
 void NetworkAnalyzer::addConnection(
     const NetworkConnection& connection
 ) {
-    // Store the original traffic record
-    connections.push_back(connection);
 
-    // Add source and destination nodes
-    communicationGraph.addNode(connection.sourceIP);
-    communicationGraph.addNode(connection.destinationIP);
+    // Create a copy for normalization    
+    NetworkConnection normalized = connection;
 
-    // Build an undirected communication relationship
-    if (connection.sourceIP != connection.destinationIP) {
+    normalized.protocol =
+        normalizeProtocol(connection.protocol);
+
+    // Store the normalized traffic record
+    connections.push_back(normalized);
+
+    //Add source and destination IPs to the graph
+    communicationGraph.addNode(normalized.sourceIP);
+    communicationGraph.addNode(normalized.destinationIP);
+
+    //Add and undirected edge between source and destination IPs if they are different
+    if (normalized.sourceIP != normalized.destinationIP) {
         communicationGraph.addEdge(
-            connection.sourceIP,
-            connection.destinationIP
+            normalized.sourceIP,
+            normalized.destinationIP
         );
+    
     }
 }
 

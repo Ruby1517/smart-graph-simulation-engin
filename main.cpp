@@ -2,26 +2,134 @@
 #include "NetworkAnalyzer.h"
 #include "TrafficCSVReader.h"
 #include "PortScanDetector.h"
+#include "ZeekLogReader.h"
+#include "GeoAnalyzer.h"
+#include "InvestigationReport.h"
 
 #include <iostream>
 #include <exception>
 
 int main() {
     try {
-        TrafficCSVReader reader;
+
+        GeoAnalyzer geoAnalyzer;
+
+
+        geoAnalyzer.addLocation({
+            "192.168.1.10",
+            "United States",
+            "Fresno",
+            36.7378,
+            -119.7871,
+            true
+        });
+
+        geoAnalyzer.addLocation({
+            "192.168.1.20",
+            "United States",
+            "San Francisco",
+            37.7749,
+            -122.4194,
+            true
+        });
+
+        geoAnalyzer.addLocation({
+            "192.168.1.30",
+            "United States",
+            "Los Angeles",
+            34.0522,
+            -118.2437,
+            true
+        });
+
+        geoAnalyzer.addLocation({
+            "192.168.1.40",
+            "United States",
+            "Sacramento",
+            38.5816,
+            -121.4944,
+            true
+        });
+
+        geoAnalyzer.addLocation({
+            "192.168.1.50",
+            "",
+            "",
+            0.0,
+            0.0,
+            false
+        });
+
+        geoAnalyzer.exportGeoJSON(
+            "data/network_locations.geojson"
+        );
+
+
+        std::cout << "\nGIS GeoJSON export completed.\n";
+
+
         NetworkAnalyzer analyzer;
 
-        // Step 1: Read network traffic CSV
-        auto records = reader.readFile(
+        // Import CSV records
+        TrafficCSVReader csvReader;
+
+        auto csvRecords = csvReader.readFile(
             "data/network_traffic.csv"
         );
 
-        // Step 2: Populate the analyzer
-        for (const auto& record : records) {
+        for (const auto& record : csvRecords) {
             analyzer.addConnection(record);
         }
 
-        // Step 3: Detect possible port scanning
+        // Import Zeek records
+        ZeekLogReader zeekReader;
+
+        auto zeekRecords = zeekReader.readFile(
+            "data/sample_conn.log"
+        );
+
+        for (const auto& record : zeekRecords) {
+            analyzer.addConnection(record);
+        }
+
+        geoAnalyzer.exportAggregatedGeoJSON(
+            "data/network_aggregated.geojson",
+            analyzer.getConnections()
+        );
+
+        auto geoSummaries = geoAnalyzer.aggregateTraffic(
+            analyzer.getConnections()
+        );
+
+        std::cout << "\n--- Geographic Traffic Summary ---\n";
+
+        for (const auto& summary : geoSummaries) {
+            std::cout
+                << summary.sourceIP << " -> "
+                << summary.destinationIP
+                << " | Records: " << summary.connectionCount
+                << " | Bytes: " << summary.totalBytes
+                << '\n';
+}
+
+        geoAnalyzer.exportCommunicationGeoJSON(
+            "data/network_communications.geojson",
+            analyzer.getConnections()
+        );
+
+        std::cout << "\nGIS communication lines exported.\n";
+
+        std::cout << "--- Import Summary ---\n";
+        std::cout << "CSV records: "
+                  << csvRecords.size() << '\n';
+
+        std::cout << "Zeek records: "
+                  << zeekRecords.size() << '\n';
+
+        std::cout << "Total records: "
+                  << analyzer.connectionCount() << '\n';
+
+        // Detect possible port scans
         PortScanDetector detector(5, 60);
 
         auto alerts = detector.detect(
@@ -45,19 +153,22 @@ int main() {
                 << "Last seen: " << alert.lastSeen << '\n';
         }
 
-        // Step 4: Display imported connections
-        std::cout << "\n--- Imported Connections ---\n";
-        analyzer.printConnections();
+        InvestigationReport report;
 
-        // Step 5: Display communication graph
+        report.exportText(
+            "data/investigation_report.txt",
+            analyzer,
+            alerts,
+            geoAnalyzer
+        );
+        
+        std::cout << "\nInvestigation report exported.\n";
+
+        // Display communication graph
         std::cout << "\n--- Communication Graph ---\n";
         analyzer.printNetworkGraph();
 
-        std::cout << "\nTotal traffic records: "
-                  << analyzer.connectionCount()
-                  << '\n';
-
-        // Step 6: Display traffic statistics
+        // Display traffic statistics
         std::cout << "\n--- Traffic Statistics ---\n";
 
         std::cout << "Total bytes: "
@@ -67,7 +178,6 @@ int main() {
 
         for (const auto& [protocol, count] :
              analyzer.protocolCounts()) {
-
             std::cout << protocol
                       << ": " << count << '\n';
         }
@@ -76,7 +186,6 @@ int main() {
 
         for (const auto& [ip, count] :
              analyzer.sourceIPCounts()) {
-
             std::cout << ip
                       << ": " << count << '\n';
         }
@@ -85,7 +194,6 @@ int main() {
 
         for (const auto& [port, count] :
              analyzer.destinationPortCounts()) {
-
             std::cout << port
                       << ": " << count << '\n';
         }

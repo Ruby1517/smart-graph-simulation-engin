@@ -15,4 +15,9 @@ struct NetworkConnection {
 
     std::string protocol;
     std::uint64_t bytesTransferred;
+
+    // Additional Zeek metadata
+    std::uint64_t originatorBytes = 0;
+    std::uint64_t responderBytes = 0;
+    std::string connectionState;
 };

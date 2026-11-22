@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-119.7871, 36.7378]
+      },
+      "properties": {
+        "ip": "192.168.1.10",
+        "country": "United States",
+        "city": "Fresno"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.4194, 37.7749]
+      },
+      "properties": {
+        "ip": "192.168.1.20",
+        "country": "United States",
+        "city": "San Francisco"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-118.2437, 34.0522]
+      },
+      "properties": {
+        "ip": "192.168.1.30",
+        "country": "United States",
+        "city": "Los Angeles"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-121.4944, 38.5816]
+      },
+      "properties": {
+        "ip": "192.168.1.40",
+        "country": "United States",
+        "city": "Sacramento"
+      }
+    }
+  ]
+}

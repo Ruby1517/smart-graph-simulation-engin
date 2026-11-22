@@ -1,0 +1,14 @@
+
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	conn
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	proto	orig_bytes	resp_bytes	conn_state
+#types	time	string	addr	port	addr	port	enum	count	count	string
+1793797920.0	C1	192.168.1.50	54001	192.168.1.20	21	tcp	64	0	S0
+1793797921.0	C2	192.168.1.50	54002	192.168.1.20	22	tcp	64	0	S0
+1793797922.0	C3	192.168.1.50	54003	192.168.1.20	23	tcp	64	0	S0
+1793797923.0	C4	192.168.1.50	54004	192.168.1.20	80	tcp	64	0	S0
+1793797924.0	C5	192.168.1.50	54005	192.168.1.20	443	tcp	64	0	S0
+#close	2026-11-04-10-32-05

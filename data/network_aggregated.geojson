@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-119.7871, 36.7378],
+          [-122.4194, 37.7749]
+        ]
+      },
+      "properties": {
+        "sourceIP": "192.168.1.10",
+        "destinationIP": "192.168.1.20",
+        "connectionCount": 1,
+        "totalBytes": 2048
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-119.7871, 36.7378],
+          [-118.2437, 34.0522]
+        ]
+      },
+      "properties": {
+        "sourceIP": "192.168.1.10",
+        "destinationIP": "192.168.1.30",
+        "connectionCount": 1,
+        "totalBytes": 1024
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-122.4194, 37.7749],
+          [-119.7871, 36.7378]
+        ]
+      },
+      "properties": {
+        "sourceIP": "192.168.1.20",
+        "destinationIP": "192.168.1.10",
+        "connectionCount": 1,
+        "totalBytes": 4096
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-121.4944, 38.5816],
+          [-122.4194, 37.7749]
+        ]
+      },
+      "properties": {
+        "sourceIP": "192.168.1.40",
+        "destinationIP": "192.168.1.20",
+        "connectionCount": 1,
+        "totalBytes": 512
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-121.4944, 38.5816],
+          [-118.2437, 34.0522]
+        ]
+      },
+      "properties": {
+        "sourceIP": "192.168.1.40",
+        "destinationIP": "192.168.1.30",
+        "connectionCount": 1,
+        "totalBytes": 1024
+      }
+    }
+  ]
+}

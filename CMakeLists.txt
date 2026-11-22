@@ -17,6 +17,9 @@ add_library(graph_core
     NetworkAnalyzer.cpp
     TrafficCSVReader.cpp
     PortScanDetector.cpp
+    ZeekLogReader.cpp
+    GeoAnalyzer.cpp
+    InvestigationReport.cpp
 )
 
 target_include_directories(graph_core
@@ -67,6 +70,19 @@ if(BUILD_TESTING)
     add_test(
         NAME CSVReaderValidation
         COMMAND test_csv_reader
+    )
+
+    add_executable(test_geo_analyzer
+        tests/test_geo_analyzer.cpp
+    )
+
+    target_link_libraries(test_geo_analyzer
+        PRIVATE graph_core
+    )
+
+    add_test(
+        NAME GeoAnalyzerValidation
+        COMMAND test_geo_analyzer
     )
     
 endif()

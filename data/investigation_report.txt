@@ -1,0 +1,50 @@
+SMART GRAPH NETWORK FORENSICS REPORT
+===================================
+
+TRAFFIC SUMMARY
+---------------
+Records: 15
+Total bytes: 9344
+
+PROTOCOL COUNTS
+---------------
+TCP: 15
+
+SOURCE IP COUNTS
+----------------
+192.168.1.10: 2
+192.168.1.20: 1
+192.168.1.40: 2
+192.168.1.50: 10
+
+DESTINATION PORT COUNTS
+-----------------------
+21: 2
+22: 3
+23: 2
+80: 3
+443: 4
+51524: 1
+
+POSSIBLE PORT SCAN ALERTS
+-------------------------
+Source: 192.168.1.50
+Destination: 192.168.1.20
+Unique ports: 5
+First seen: 2026-11-04 10:32:00
+Last seen: 2026-11-04 10:32:04
+
+
+GEOGRAPHIC TRAFFIC SUMMARY
+--------------------------
+192.168.1.10 -> 192.168.1.20 | Records: 1 | Bytes: 2048
+192.168.1.10 -> 192.168.1.30 | Records: 1 | Bytes: 1024
+192.168.1.20 -> 192.168.1.10 | Records: 1 | Bytes: 4096
+192.168.1.40 -> 192.168.1.20 | Records: 1 | Bytes: 512
+192.168.1.40 -> 192.168.1.30 | Records: 1 | Bytes: 1024
+
+ANALYSIS NOTES
+--------------
+Alerts indicate patterns requiring investigation, not confirmed malicious activity.
+Geographic locations in this demonstration are synthetic and do not represent verified IP locations.
+CSV and Zeek observations may overlap; duplicate evidence has not been reconciled.
