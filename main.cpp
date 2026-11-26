@@ -5,9 +5,29 @@
 #include "ZeekLogReader.h"
 #include "GeoAnalyzer.h"
 #include "InvestigationReport.h"
+#include "EvidenceRecord.h"
+#include "EvidenceSnapshot.h"
 
 #include <iostream>
 #include <exception>
+#include <string>
+#include <vector>
+
+namespace {
+
+template <typename Reader>
+EvidenceRecord importEvidence(
+    const Reader& reader, const std::string& filename, NetworkAnalyzer& analyzer
+) {
+    const EvidenceSnapshot snapshot(filename);
+    const auto records = reader.readSnapshot(snapshot);
+    for (const auto& record : records) {
+        analyzer.addConnection(record);
+    }
+    return {snapshot.filename(), snapshot.sha256(), records.size(), snapshot.metadata()};
+}
+
+} // namespace
 
 int main() {
     try {
@@ -69,28 +89,10 @@ int main() {
 
 
         NetworkAnalyzer analyzer;
-
-        // Import CSV records
-        TrafficCSVReader csvReader;
-
-        auto csvRecords = csvReader.readFile(
-            "data/network_traffic.csv"
-        );
-
-        for (const auto& record : csvRecords) {
-            analyzer.addConnection(record);
-        }
-
-        // Import Zeek records
-        ZeekLogReader zeekReader;
-
-        auto zeekRecords = zeekReader.readFile(
-            "data/sample_conn.log"
-        );
-
-        for (const auto& record : zeekRecords) {
-            analyzer.addConnection(record);
-        }
+        const auto csvEvidence =
+            importEvidence(TrafficCSVReader{}, "data/network_traffic.csv", analyzer);
+        const auto zeekEvidence =
+            importEvidence(ZeekLogReader{}, "data/sample_conn.log", analyzer);
 
         geoAnalyzer.exportAggregatedGeoJSON(
             "data/network_aggregated.geojson",
@@ -121,10 +123,10 @@ int main() {
 
         std::cout << "--- Import Summary ---\n";
         std::cout << "CSV records: "
-                  << csvRecords.size() << '\n';
+                  << csvEvidence.importedRecords << '\n';
 
         std::cout << "Zeek records: "
-                  << zeekRecords.size() << '\n';
+                  << zeekEvidence.importedRecords << '\n';
 
         std::cout << "Total records: "
                   << analyzer.connectionCount() << '\n';
@@ -159,7 +161,8 @@ int main() {
             "data/investigation_report.txt",
             analyzer,
             alerts,
-            geoAnalyzer
+            geoAnalyzer,
+            {csvEvidence, zeekEvidence}
         );
         
         std::cout << "\nInvestigation report exported.\n";

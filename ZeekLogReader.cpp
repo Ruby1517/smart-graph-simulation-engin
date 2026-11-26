@@ -1,5 +1,6 @@
 
 #include "ZeekLogReader.h"
+#include "EvidenceSnapshot.h"
 
 #include <algorithm>
 #include <cmath>
@@ -122,6 +123,19 @@ ZeekLogReader::readFile(
         );
     }
 
+    return readStream(file);
+}
+
+std::vector<NetworkConnection>
+ZeekLogReader::readSnapshot(const EvidenceSnapshot& snapshot) const {
+    auto file = snapshot.open();
+    auto records = readStream(file);
+    snapshot.verifyConsumed(file);
+    return records;
+}
+
+std::vector<NetworkConnection>
+ZeekLogReader::readStream(std::istream& file) {
     std::vector<NetworkConnection> records;
     std::map<std::string, std::size_t> columns;
 

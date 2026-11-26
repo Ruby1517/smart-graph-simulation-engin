@@ -43,6 +43,18 @@ GEOGRAPHIC TRAFFIC SUMMARY
 192.168.1.40 -> 192.168.1.20 | Records: 1 | Bytes: 512
 192.168.1.40 -> 192.168.1.30 | Records: 1 | Bytes: 1024
 
+EVIDENCE SOURCES
+----------------
+Filename: data/network_traffic.csv
+SHA-256: 4caac814883b9bacc3c783664e35d6190a9d52cb694a1e6ab3865eb5ac5a463e
+Imported records: 10
+
+Filename: data/sample_conn.log
+SHA-256: e7e857b6831efd93dcc52f389f00e469058839d966610479630552501077757b
+Imported records: 5
+
+Total imported evidence records: 15
+
 ANALYSIS NOTES
 --------------
 Alerts indicate patterns requiring investigation, not confirmed malicious activity.

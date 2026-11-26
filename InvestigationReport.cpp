@@ -1,14 +1,34 @@
 
 #include "InvestigationReport.h"
 
+#include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <stdexcept>
+
+namespace {
+
+void writeCaptureTime(
+    std::ostream& output, std::chrono::system_clock::time_point time
+) {
+    const auto seconds = std::chrono::system_clock::to_time_t(time);
+    std::tm utc{};
+    if (::gmtime_r(&seconds, &utc)) {
+        output << std::put_time(&utc, "%Y-%m-%dT%H:%M:%SZ");
+    } else {
+        output << "unavailable";
+    }
+    output << '\n';
+}
+
+} // namespace
 
 void InvestigationReport::exportText(
     const std::string& filename,
     const NetworkAnalyzer& analyzer,
     const std::vector<PortScanAlert>& alerts,
-    const GeoAnalyzer& geoAnalyzer
+    const GeoAnalyzer& geoAnalyzer,
+    const std::vector<EvidenceRecord>& evidence
 ) const {
     std::ofstream file(filename);
 
@@ -78,6 +98,48 @@ void InvestigationReport::exportText(
              << " | Records: " << summary.connectionCount
              << " | Bytes: " << summary.totalBytes
              << '\n';
+    }
+
+    file << "\nEVIDENCE SOURCES\n";
+    file << "----------------\n";
+
+    std::size_t totalImported = 0;
+
+    for (const auto& item : evidence) {
+        file << "Filename: " << item.filename << '\n';
+        file << "SHA-256: " << item.sha256 << '\n';
+        file << "Imported records: "
+             << item.importedRecords << '\n';
+
+        if (item.snapshot) {
+            const auto& snapshot = *item.snapshot;
+            file << "Snapshot ID: " << snapshot.id << '\n';
+            file << "Snapshot size (bytes): " << snapshot.sizeBytes << '\n';
+            file << "Capture started (UTC): ";
+            writeCaptureTime(file, snapshot.captureStarted);
+            file << "Capture finished (UTC): ";
+            writeCaptureTime(file, snapshot.captureFinished);
+            if (snapshot.sourceChangeObserved) {
+                file << "WARNING: Source changed during capture. Captured bytes "
+                        "may include content from different moments.\n";
+            }
+            if (snapshot.sourcePathUnavailable) {
+                file << "WARNING: Source path could not be checked after capture.\n";
+            }
+        } else {
+            file << "WARNING: No snapshot metadata supplied for this evidence.\n";
+        }
+        file << '\n';
+
+        totalImported += item.importedRecords;
+    }
+
+    file << "Total imported evidence records: "
+         << totalImported << '\n';
+
+    if (totalImported != analyzer.connectionCount()) {
+        file << "WARNING: Evidence record counts do not match "
+             << "the analyzer's record count.\n";
     }
 
     file << "\nANALYSIS NOTES\n";

@@ -3,12 +3,21 @@
 
 #include "NetworkConnection.h"
 
+#include <iosfwd>
 #include <string>
 #include <vector>
+
+class EvidenceSnapshot;
 
 class TrafficCSVReader {
 public:
     std::vector<NetworkConnection> readFile(
         const std::string& filename
     ) const;
+    std::vector<NetworkConnection> readSnapshot(const EvidenceSnapshot& snapshot) const;
+
+private:
+    static std::vector<NetworkConnection> readStream(
+        std::istream& file, const std::string& filename
+    );
 };

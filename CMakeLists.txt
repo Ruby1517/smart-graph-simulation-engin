@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+
 # Shared project code
 add_library(graph_core
     Graph.cpp
@@ -20,10 +22,16 @@ add_library(graph_core
     ZeekLogReader.cpp
     GeoAnalyzer.cpp
     InvestigationReport.cpp
+    EvidenceHasher.cpp
+    EvidenceSnapshot.cpp
 )
 
 target_include_directories(graph_core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(graph_core
+    PRIVATE OpenSSL::Crypto
 )
 
 # Compiler warnings
@@ -84,5 +92,43 @@ if(BUILD_TESTING)
         NAME GeoAnalyzerValidation
         COMMAND test_geo_analyzer
     )
-    
+
+    add_executable(test_investigation_report
+        tests/test_investigation_report.cpp
+    )
+
+    target_link_libraries(test_investigation_report
+        PRIVATE graph_core
+    )
+
+    add_test(
+        NAME InvestigationReportValidation
+        COMMAND test_investigation_report
+    )
+
+    add_executable(test_evidence_hasher
+        tests/test_evidence_hasher.cpp
+    )
+
+    target_link_libraries(test_evidence_hasher
+        PRIVATE graph_core
+    )
+
+    add_test(
+        NAME EvidenceHasherValidation
+        COMMAND test_evidence_hasher
+    )
+
+    add_executable(test_evidence_snapshot
+        tests/test_evidence_snapshot.cpp
+    )
+
+    target_link_libraries(test_evidence_snapshot
+        PRIVATE graph_core
+    )
+
+    add_test(
+        NAME EvidenceSnapshotValidation
+        COMMAND test_evidence_snapshot
+    )
 endif()

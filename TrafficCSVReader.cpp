@@ -1,5 +1,6 @@
 
 #include "TrafficCSVReader.h"
+#include "EvidenceSnapshot.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -108,6 +109,19 @@ TrafficCSVReader::readFile(
         );
     }
 
+    return readStream(file, filename);
+}
+
+std::vector<NetworkConnection>
+TrafficCSVReader::readSnapshot(const EvidenceSnapshot& snapshot) const {
+    auto file = snapshot.open();
+    auto records = readStream(file, snapshot.filename());
+    snapshot.verifyConsumed(file);
+    return records;
+}
+
+std::vector<NetworkConnection>
+TrafficCSVReader::readStream(std::istream& file, const std::string& filename) {
     std::vector<NetworkConnection> records;
     std::string line;
     std::size_t lineNumber = 0;

@@ -4,6 +4,7 @@
 #include "NetworkAnalyzer.h"
 #include "PortScanDetector.h"
 #include "GeoAnalyzer.h"
+#include "EvidenceRecord.h"
 
 #include <string>
 #include <vector>
@@ -14,6 +15,7 @@ public:
         const std::string& filename,
         const NetworkAnalyzer& analyzer,
         const std::vector<PortScanAlert>& alerts,
-        const GeoAnalyzer& geoAnalyzer
+        const GeoAnalyzer& geoAnalyzer,
+        const std::vector<EvidenceRecord>& evidenceRecords
     ) const;
 };
